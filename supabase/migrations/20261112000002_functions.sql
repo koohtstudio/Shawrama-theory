@@ -164,7 +164,7 @@ begin
   update public.orders
     set payment_status = 'paid',
         paid_at = now(),
-        stripe_session_id = coalesce(p_session_id, stripe_session_id),
+        stripe_session_id = coalesce(nullif(p_session_id, ''), stripe_session_id),
         status = case when status = 'pending_payment' then 'new'::public.order_status else status end
     where id = p_order_id;
   return 'paid';
