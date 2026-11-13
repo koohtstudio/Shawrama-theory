@@ -3,7 +3,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { isMock, publicEnv, serverEnv } from "@/lib/env";
+import { isMock, publicEnv } from "@/lib/env";
+import { serverEnv } from "@/lib/env.server";
 import { allow, hashKey } from "@/lib/ratelimit";
 import { createClient } from "@/lib/supabase/server";
 

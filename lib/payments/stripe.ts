@@ -1,6 +1,7 @@
 import "server-only";
 import Stripe from "stripe";
-import { publicEnv, serverEnv } from "@/lib/env";
+import { publicEnv } from "@/lib/env";
+import { serverEnv } from "@/lib/env.server";
 import type { PaymentProvider } from "./types";
 
 let client: Stripe | undefined;

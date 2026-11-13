@@ -48,6 +48,8 @@ export function Board({ initialOrders, initialSettings, initialItems }: { initia
   useEffect(() => {
     const sb = getBrowserClient();
     const known = new Set(initialOrders.map((o) => o.id));
+    let cancelled = false;
+    let channel: ReturnType<typeof sb.channel> | undefined;
     const load = async (id: string) => {
       const { data } = await sb.from("orders").select(ORDER_SELECT).eq("id", id).single();
       if (!data) return;
@@ -61,19 +63,33 @@ export function Board({ initialOrders, initialSettings, initialItems }: { initia
         say(`New order #${o.order_no}`);
       }
     };
-    const channel = sb
-      .channel("admin-board")
-      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, (p) => {
-        const row = (p.new && "id" in p.new ? p.new : p.old) as { id?: string } | undefined;
-        if (row?.id) void load(row.id);
-      })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "store_settings" }, (p) => setSettings(p.new as StoreSettings))
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "menu_items" }, (p) => {
-        const r = p.new as Item;
-        setItems((prev) => prev.map((i) => (i.id === r.id ? { ...i, sold_out: r.sold_out } : i)));
-      })
-      .subscribe((s) => setLive(s === "SUBSCRIBED"));
-    return () => void sb.removeChannel(channel);
+    (async () => {
+      // Realtime must carry the staff member's JWT, or RLS (correctly) hides every order from it.
+      const { data } = await sb.auth.getSession();
+      if (data.session) await sb.realtime.setAuth(data.session.access_token);
+      if (cancelled) return;
+      channel = sb
+        .channel("admin-board")
+        .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, (p) => {
+          const row = (p.new && "id" in p.new ? p.new : p.old) as { id?: string } | undefined;
+          if (row?.id) void load(row.id);
+        })
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "store_settings" }, (p) => setSettings(p.new as StoreSettings))
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "menu_items" }, (p) => {
+          const r = p.new as Item;
+          setItems((prev) => prev.map((i) => (i.id === r.id ? { ...i, sold_out: r.sold_out } : i)));
+        })
+        .subscribe((st) => setLive(st === "SUBSCRIBED"));
+    })();
+    // Keep the socket's token fresh when the session refreshes.
+    const { data: sub } = sb.auth.onAuthStateChange((_e, session) => {
+      if (session) void sb.realtime.setAuth(session.access_token);
+    });
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+      if (channel) void sb.removeChannel(channel);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

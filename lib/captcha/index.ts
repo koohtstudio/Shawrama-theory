@@ -1,5 +1,6 @@
 import "server-only";
-import { isMock, serverEnv } from "@/lib/env";
+import { isMock } from "@/lib/env";
+import { serverEnv } from "@/lib/env.server";
 
 /** Cloudflare Turnstile. Stubbed (always passes) in mock mode. */
 export async function verifyCaptcha(token: string | undefined, ip: string | null): Promise<boolean> {
