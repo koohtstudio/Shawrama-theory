@@ -1,4 +1,4 @@
-# Shawarma Theory 
+# Shawarma Theory  
 
 Website, pickup ordering and kitchen admin for Shawarma Theory, 510 Bayfield St, Barrie. Next.js 15 (App Router) · Tailwind v4 · Supabase (Postgres, Auth, Realtime, Storage) · Stripe · Resend · Vercel.
 
