@@ -84,7 +84,7 @@ Secrets live only in `.env.local` / Vercel. `.env.example` has names only.
 
 ## Known gaps
 
-- **Lighthouse mobile is 94 on Home and Menu, not yet 95.** Accessibility 98–100, best practices 100, SEO 100. The remaining gap is LCP (about 3.0 s in Lighthouse's throttled run).
+- **Lighthouse mobile is 93–94 on Home and Menu with its default throttling, not 95.** Accessibility 98–100, best practices 100, SEO 100, CLS about 0. Run unthrottled (`--throttling-method=provided`) the same page scores 100 with a 0.2 s LCP, so the gap is Lighthouse's slow-4G, 4x-CPU model charging for the render-blocking CSS and framework JS. Tried without gain: smaller hero images, priority images on the first cards, no opacity fades on LCP elements, delaying the realtime client, dropping blur placeholders, fewer font preloads. Worth re-measuring on the real Vercel deployment.
 - **Stripe, Resend, Twilio and Turnstile code paths are untested against the real services** (no keys yet). The Stripe webhook signature check, amount check and replay handling are written to spec; run a Stripe test-mode order before launch.
 - **Magic-link login** is untested end to end (needs real SMTP).
 - Unpublishing an item reaches already-open public pages on their next load or refresh, not instantly (Realtime can't send a row anon can no longer see). Sold-out, prep time, pause, hours and beef changes are instant.
