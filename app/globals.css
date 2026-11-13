@@ -72,6 +72,8 @@ body {
 .track { display: flex; width: max-content; animation: tick 42s linear infinite; }
 .track-slow { animation-duration: 60s; }
 .track-mid { animation-duration: 30s; }
+.track-wordmark { animation-duration: 50s; }
+.track-reverse { animation-direction: reverse; }
 .pause-on-hover:hover .track { animation-play-state: paused; }
 .arch-float-a { animation: float 8s ease-in-out infinite; }
 .arch-float-b { animation: float 9s ease-in-out -3s infinite; }
