@@ -8,6 +8,7 @@ const serverSchema = z
     ORDER_TOKEN_SECRET: z.string().min(32),
     DEMO_STAFF_EMAIL: z.string().optional(),
     DEMO_STAFF_PASSWORD: z.string().optional(),
+    DEMO_ADMIN_CODE: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().optional(),
     STRIPE_WEBHOOK_SECRET: z.string().optional(),
     RESEND_API_KEY: z.string().optional(),

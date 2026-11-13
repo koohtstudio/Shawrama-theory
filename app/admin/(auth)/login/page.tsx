@@ -1,9 +1,9 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { LoginForm } from "@/components/admin/LoginForm";
+import { DemoLoginForm, LoginForm } from "@/components/admin/LoginForm";
 import { isMock } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
-import { demoLogin, signOut } from "../actions";
+import { signOut } from "../actions";
 
 export const metadata: Metadata = { title: "Staff sign in", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -25,12 +25,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         ) : null}
         <div className="mt-6 flex flex-col gap-4">
           <LoginForm />
-          {isMock ? (
-            <form action={demoLogin} className="border-t border-line pt-4">
-              <button type="submit" className="btn btn-coal w-full">Demo login</button>
-              <p className="mt-2 text-center text-xs text-faint">Demo mode only. Signs in as the seeded owner.</p>
-            </form>
-          ) : null}
+          {isMock ? <DemoLoginForm needsCode={!!process.env.DEMO_ADMIN_CODE} /> : null}
         </div>
       </div>
     </main>

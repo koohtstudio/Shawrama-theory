@@ -49,7 +49,8 @@ Live mode turns on: Stripe Checkout, Resend email (Twilio texts optional), Turns
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | both | Public by design; RLS protects the data |
 | `SUPABASE_SERVICE_ROLE_KEY` | both | **Secret.** Server only: creates orders, settles payments, logs messages |
 | `ORDER_TOKEN_SECRET` | both | **Secret.** 32+ chars. Signs order-status links |
-| `DEMO_STAFF_EMAIL`, `DEMO_STAFF_PASSWORD` | mock | Match `supabase/seed.sql`. Unused in live |
+| `DEMO_STAFF_EMAIL`, `DEMO_STAFF_PASSWORD` | mock | Match `supabase/seed.sql` locally. On a hosted demo, change the account's password and set the same value here. Unused in live |
+| `DEMO_ADMIN_CODE` | mock | **Secret.** If set, Demo login asks for it. Set it on any demo reachable from the internet |
 | `STRIPE_SECRET_KEY` | live | **Secret.** `sk_test_…` then `sk_live_…` |
 | `STRIPE_WEBHOOK_SECRET` | live | **Secret.** `whsec_…` |
 | `RESEND_API_KEY` | live | **Secret** |

@@ -1,5 +1,6 @@
 "use server";
 
+import { createHash, timingSafeEqual } from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -8,16 +9,29 @@ import { serverEnv } from "@/lib/env.server";
 import { allow, hashKey } from "@/lib/ratelimit";
 import { createClient } from "@/lib/supabase/server";
 
-/** Mock mode only: signs in the seeded demo owner. Refuses in live mode. */
-export async function demoLogin() {
+const digest = (v: string) => createHash("sha256").update(v).digest();
+
+/**
+ * Mock mode only: signs in the demo owner. If DEMO_ADMIN_CODE is set (it should be on any
+ * internet-facing demo), the visitor must type it first. Refuses in live mode.
+ */
+export async function demoLogin(_prev: { error: string } | undefined, form: FormData): Promise<{ error: string }> {
   if (!isMock) throw new Error("Demo login is disabled in live mode");
+  const required = process.env.DEMO_ADMIN_CODE;
+  if (required) {
+    const h = await headers();
+    const ip = (h.get("x-forwarded-for")?.split(",")[0] ?? "unknown").trim();
+    if (!(await allow(`demo:ip:${hashKey(ip)}`, 8, 600))) return { error: "Too many tries. Wait a few minutes." };
+    const given = String(form.get("code") ?? "");
+    if (!timingSafeEqual(digest(given), digest(required))) return { error: "That access code isn't right." };
+  }
   const env = serverEnv();
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
     email: env.DEMO_STAFF_EMAIL ?? "",
     password: env.DEMO_STAFF_PASSWORD ?? "",
   });
-  if (error) throw new Error("Demo login failed. Did you run `pnpm db:reset`?");
+  if (error) return { error: "Demo login failed. Is the demo account set up in the database?" };
   redirect("/admin");
 }
 
