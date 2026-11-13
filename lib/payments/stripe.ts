@@ -7,7 +7,7 @@ let client: Stripe | undefined;
 export const getStripe = () => (client ??= new Stripe(serverEnv().STRIPE_SECRET_KEY!));
 
 export const stripePayments: PaymentProvider = {
-  async createCheckout({ orderId, orderNo, totalCents, signedToken, customerEmail }) {
+  async createCheckout({ orderId, orderNo, totalCents, signedToken, customerEmail, attempt = "first" }) {
     const site = publicEnv.NEXT_PUBLIC_SITE_URL;
     const session = await getStripe().checkout.sessions.create(
       {
@@ -30,7 +30,7 @@ export const stripePayments: PaymentProvider = {
         cancel_url: `${site}/order/${signedToken}?payment=cancelled`,
         expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       },
-      { idempotencyKey: `checkout-${orderId}` },
+      { idempotencyKey: `checkout-${orderId}-${attempt}` },
     );
     if (!session.url) throw new Error("Stripe returned no checkout URL");
     return { redirectUrl: session.url };

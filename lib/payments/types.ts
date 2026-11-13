@@ -4,6 +4,7 @@ export type CheckoutRequest = {
   totalCents: number;
   signedToken: string;
   customerEmail: string | null;
+  attempt?: string;
 };
 export type PaymentProvider = {
   createCheckout(req: CheckoutRequest): Promise<{ redirectUrl: string }>;
