@@ -45,9 +45,9 @@ export function Hero({ settings }: { settings: StoreSettings }) {
         </div>
       </div>
 
-      <div className="anim-up d1 relative h-[440px] md:h-[640px]">
+      <div className="relative h-[440px] md:h-[640px]">
         <div className="arch-float-a absolute left-[6%] top-0 h-[92%] w-[58%] overflow-hidden rounded-[999px_999px_28px_28px] shadow-[0_40px_70px_-40px_rgba(23,18,15,0.7)]">
-          <Photo src="/photos/wraps-in-hand.jpg" alt="Two loaded chicken shawarma saj wraps held up to the camera" sizes="(min-width: 768px) 30vw, 60vw" priority />
+          <Photo src="/photos/wraps-in-hand.jpg" alt="Two loaded chicken shawarma saj wraps held up to the camera" sizes="(min-width: 768px) 30vw, 54vw" quality={68} priority />
         </div>
         <div className="arch-float-b absolute bottom-[2%] right-0 h-[52%] w-[40%] overflow-hidden rounded-[28px_28px_999px_999px] shadow-[0_40px_70px_-40px_rgba(23,18,15,0.7)]">
           <Photo src="/photos/beef-steaks-shawarma.jpg" alt="Beef shawarma being carved off the spit" sizes="(min-width: 768px) 20vw, 40vw" />

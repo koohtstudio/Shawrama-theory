@@ -56,12 +56,14 @@ body {
   70% { box-shadow: 0 0 0 10px rgba(63, 138, 78, 0); }
   100% { box-shadow: 0 0 0 0 rgba(63, 138, 78, 0); }
 }
+@keyframes lift { from { transform: translateY(18px); } to { transform: none; } }
 @keyframes pop { from { transform: scale(0.3) rotate(-30deg); opacity: 0; } }
 @keyframes slide-in-right { from { transform: translateX(105%); } }
 @keyframes slide-in-up { from { transform: translateY(105%); } }
 @keyframes fade-in { from { opacity: 0; } }
 @keyframes new-flash { 0%, 100% { box-shadow: 0 0 0 2px var(--color-ember); } 50% { box-shadow: 0 0 0 6px rgba(240, 136, 42, 0.35); } }
 
+.lift-in { animation: lift 0.7s var(--ease-out-soft) both; }
 .anim-up { opacity: 0; animation: up 0.9s var(--ease-out-soft) forwards; }
 .d1 { animation-delay: 0.1s; } .d2 { animation-delay: 0.25s; } .d3 { animation-delay: 0.4s; }
 .reveal { display: block; overflow: hidden; padding-bottom: 0.08em; }

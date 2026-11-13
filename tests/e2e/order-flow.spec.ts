@@ -90,6 +90,7 @@ test("sold-out, prep time and pause switch live on the public site", async ({ br
 
   // prep time shows on the home page chip
   await pub.goto("/");
+  await pub.mouse.click(10, 10); // a first interaction starts the public realtime connection
   await pub.waitForTimeout(3000);
   const before = Number((await pub.getByText(/Ready in ~\d+ min/).first().textContent())!.match(/\d+/)![0]);
   await admin.getByRole("button", { name: "More prep time" }).click();

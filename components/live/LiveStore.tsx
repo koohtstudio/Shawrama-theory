@@ -118,14 +118,21 @@ export function LiveStoreProvider({ initial, children }: { initial: LiveInitial;
       teardown = () => void sb.removeChannel(channel);
     }
 
-    const hasIdle = "requestIdleCallback" in window;
-    const handle = hasIdle
-      ? window.requestIdleCallback(() => void start(), { timeout: 2500 })
-      : window.setTimeout(() => void start(), 1200);
+    // Start after the first interaction, or after a few quiet seconds, so the realtime client
+    // never competes with first paint. The first SUBSCRIBED refetch brings everything up to date.
+    let started = false;
+    const go = () => {
+      if (started) return;
+      started = true;
+      void start();
+    };
+    const events = ["pointerdown", "keydown", "scroll", "touchstart"] as const;
+    for (const e of events) window.addEventListener(e, go, { once: true, passive: true });
+    const timer = window.setTimeout(go, 6000);
     return () => {
       cancelled = true;
-      if (hasIdle) window.cancelIdleCallback(handle);
-      else clearTimeout(handle);
+      for (const e of events) window.removeEventListener(e, go);
+      clearTimeout(timer);
       teardown?.();
     };
   }, []);

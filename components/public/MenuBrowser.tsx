@@ -45,7 +45,7 @@ export function MenuBrowser({ categories, items }: { categories: Category[]; ite
       {cats.map((c) => (
         <div key={c.id} hidden={tab !== c.slug} id={c.slug} className="grid gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {items.filter((i) => i.category_id === c.id).map((i, n) => (
-            <MenuCard key={i.id} item={i} index={n} />
+            <MenuCard key={i.id} item={i} index={n} priority={c.slug === cats[0]?.slug && n < 2} />
           ))}
         </div>
       ))}

@@ -18,6 +18,10 @@ select public.create_order('test-key-1', 'Test Person', '7055550123', 'a@b.dev',
   jsonb_build_array(jsonb_build_object('item_id', (select id from public.menu_items where slug = 'chicken-shawarma-saj-wrap'), 'qty', 1,
     'modifier_ids', jsonb_build_array((select id from public.modifiers where name = 'Extra garlic')))));
 
+-- Counts of real rows already in the database (the suite must not assume an empty one).
+create temp table _base as select (select count(*)::int from public.orders) as orders, (select count(*)::int from public.customers) as customers;
+grant select on _base to anon, authenticated;
+
 -- ── anonymous visitor ──
 set local role anon;
 select throws_ok('select * from public.orders', '42501', null, 'anon cannot read orders');
@@ -63,8 +67,8 @@ select ok((select min(price_cents) from public.menu_items where slug = 'falafel-
 -- ── staff ──
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"aaaaaaaa-0000-4000-8000-000000000002","role":"authenticated"}';
-select is((select count(*)::int from public.orders), 1, 'staff can read orders');
-select is((select count(*)::int from public.customers), 1, 'staff can read customers');
+select is((select count(*)::int from public.orders), (select orders from _base), 'staff can read orders');
+select is((select count(*)::int from public.customers), (select customers from _base), 'staff can read customers');
 select lives_ok($$update public.menu_items set sold_out = true where slug = 'tabouli'$$, 'staff can flip sold out');
 select lives_ok($$update public.store_settings set prep_minutes = 25$$, 'staff can change prep time');
 select throws_ok($$update public.orders set total_cents = 1$$, '42501', null, 'staff cannot rewrite order totals');

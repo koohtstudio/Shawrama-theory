@@ -6,11 +6,12 @@ type Props = {
   alt: string;
   sizes: string;
   priority?: boolean;
+  quality?: number;
   className?: string;
 };
 
 /** Fills a positioned, sized parent. Adds a blur placeholder when we have one (local photos). */
-export function Photo({ src, alt, sizes, priority, className = "" }: Props) {
+export function Photo({ src, alt, sizes, priority, quality, className = "" }: Props) {
   const meta = photoMeta(src);
   return (
     <Image
@@ -19,6 +20,7 @@ export function Photo({ src, alt, sizes, priority, className = "" }: Props) {
       fill
       sizes={sizes}
       priority={priority}
+      quality={quality}
       placeholder={meta ? "blur" : "empty"}
       blurDataURL={meta?.blur}
       className={`object-cover ${className}`}

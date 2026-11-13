@@ -13,7 +13,7 @@ export function priceLabel(item: Pick<MenuItem, "price_cents" | "price_is_placeh
   return item.price_is_placeholder ? "[PRICE]" : formatCents(item.price_cents);
 }
 
-export function MenuCard({ item, index = 0 }: { item: MenuItem; index?: number }) {
+export function MenuCard({ item, index = 0, priority = false }: { item: MenuItem; index?: number; priority?: boolean }) {
   const { itemState, beefToday, settings } = useLiveStore();
   const { add, flash } = useCart();
   const [dialog, setDialog] = useState(false);
@@ -34,12 +34,12 @@ export function MenuCard({ item, index = 0 }: { item: MenuItem; index?: number }
 
   return (
     <article
-      className={`anim-up group flex flex-col overflow-hidden rounded-[28px] bg-white transition duration-500 hover:-translate-y-2 hover:shadow-[0_34px_60px_-40px_rgba(23,18,15,0.7)] ${unavailable ? "opacity-70" : ""}`}
+      className={`lift-in group flex flex-col overflow-hidden rounded-[28px] bg-white transition duration-500 hover:-translate-y-2 hover:shadow-[0_34px_60px_-40px_rgba(23,18,15,0.7)] ${unavailable ? "opacity-70" : ""}`}
       style={{ animationDelay: `${Math.min(index, 8) * 0.06}s` }}
     >
       {item.image_src ? (
         <div className="relative h-[220px] overflow-hidden bg-sand md:h-[250px]">
-          <Photo src={item.image_src} alt={item.image_alt} sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 92vw" className={`transition-transform duration-[1200ms] group-hover:scale-[1.08] ${unavailable ? "grayscale" : ""}`} />
+          <Photo src={item.image_src} alt={item.image_alt} sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 92vw" priority={priority} quality={70} className={`transition-transform duration-[1200ms] group-hover:scale-[1.08] ${unavailable ? "grayscale" : ""}`} />
           <div className="absolute left-3.5 top-3.5 flex gap-1.5">
             {item.tags.map((t) => (
               <span key={t} className="rounded-full bg-white/90 px-2.5 py-[5px] text-xs font-bold text-[#2a4a1e]">{t}</span>
