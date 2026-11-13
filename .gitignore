@@ -14,6 +14,6 @@ test-results
 supabase/.branches
 supabase/.temp
 .lighthouse
-photos/
-brand/
+/photos/
+/brand/
 shawarma-theory-claude-code-starter-prompt.md
