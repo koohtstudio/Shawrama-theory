@@ -9,7 +9,7 @@ export function Ticker() {
   );
   return (
     <div className="flex h-10 items-center overflow-hidden bg-coal text-[13px] uppercase tracking-[0.08em] text-sand" role="region" aria-label="Today at Shawarma Theory">
-      <div className="track">
+      <div className="track whitespace-nowrap">
         {[0, 1].map((n) => (
           <div key={n} className="flex" aria-hidden={n === 1}>
             {set(`s${n}`)}

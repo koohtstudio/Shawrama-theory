@@ -7,7 +7,7 @@ import { torontoParts } from "@/lib/time";
 /** Beef and lamb days. Driven by the schedule + manual override; flips live when staff toggle it. */
 export function BeefBanner({ className = "" }: { className?: string }) {
   const { beefToday, beefDays, now, settings } = useLiveStore();
-  const days = [...beefDays].sort((a, b) => a - b).map((d) => DAY_NAMES[d]);
+  const days = [...beefDays].sort((a, b) => (a || 7) - (b || 7)).map((d) => DAY_NAMES[d]);
   let chip = "";
   if (beefToday) chip = "On today";
   else if (now) {
